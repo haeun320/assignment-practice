@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace ChatViewer.ViewModel
 {
@@ -26,7 +27,7 @@ namespace ChatViewer.ViewModel
 
         public MainViewModel()
         {
-            
+            ChatLog = new ObservableCollection<ChatLog>();
         }
 
         private void ExecuteFileOpen()
@@ -43,24 +44,31 @@ namespace ChatViewer.ViewModel
 
         private void ReadFile(string path)
         {
-            ChatLog = new ObservableCollection<ChatLog>();
-            if (File.Exists(path))
+            try
             {
-                using (var reader = new StreamReader(path, Encoding.UTF8))
+                ChatLog.Clear();
+
+                if (File.Exists(path))
                 {
-                    while (!reader.EndOfStream)
+                    using (var reader = new StreamReader(path, Encoding.UTF8))
                     {
-                        var line = reader.ReadLine();
-
-                        ChatLog log = new ChatLog(line);
-
-                        if (log.IsValid)
+                        while (!reader.EndOfStream)
                         {
-                            ChatLog.Add(log);
-                            Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
+                            var line = reader.ReadLine();
+                            ChatLog log = new ChatLog(line);
+
+                            if (log.IsValid)
+                            {
+                                ChatLog.Add(log);
+                                Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }
