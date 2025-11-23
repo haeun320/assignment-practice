@@ -13,6 +13,9 @@ namespace ChatViewer.Model
         public DateTime Time { get; private set; }
         public string Sender { get; private set; }
         public string Message { get; private set; }
+        public bool IsHighlighted { get; private set; }
+
+        private static readonly string[] _highlightParam = { "파일", "FILE" };
 
         /// <summary>
         /// ChatLine을 받아 파싱 및 유효성 점검 후 저장
@@ -21,6 +24,7 @@ namespace ChatViewer.Model
         public ChatLog(string chatLine)
         {
             IsValid = ParseLine(chatLine);
+            CheckHighlight();
         }
 
         /// <summary>
@@ -74,6 +78,23 @@ namespace ChatViewer.Model
             Message = words[1].Trim();
 
             return true;
+        }
+
+        private void CheckHighlight()
+        {
+            if (!IsValid)
+            {
+                return;
+            }
+
+            foreach (var param in _highlightParam)
+            {
+                if (Message.Contains(param))
+                {
+                    IsHighlighted = true;
+                    return;
+                }
+            }
         }
     }
 }

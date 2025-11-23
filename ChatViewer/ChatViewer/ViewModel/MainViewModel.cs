@@ -18,16 +18,28 @@ namespace ChatViewer.ViewModel
         [ObservableProperty]
         private ObservableCollection<ChatLog> _chatLog;
 
+        private List<ChatLog> _fullLog;
+
+        [ObservableProperty]
+        private string _searchParam;
+
         [RelayCommand]
         public void FileOpen()
         {
             ExecuteFileOpen();
         }
 
+        [RelayCommand]
+        public async Task Search()
+        {
+            await ExecuteSearch();
+        }
+
 
         public MainViewModel()
         {
             ChatLog = new ObservableCollection<ChatLog>();
+            _fullLog = new List<ChatLog>();
         }
 
         private void ExecuteFileOpen()
@@ -42,11 +54,37 @@ namespace ChatViewer.ViewModel
             }
         }
 
+        private async Task ExecuteSearch()
+        {
+            if (string.IsNullOrEmpty(SearchParam))
+            {
+                SearchParam = "";
+            }
+
+            string param = SearchParam.Trim();
+            var snapshot = _fullLog.ToList();
+
+            var searchResult = await Task.Run(() =>
+            {
+                var logQuery = from log in snapshot
+                               where log.Sender.Contains(param) || log.Message.Contains(param)
+                               select log;
+                return logQuery.ToList();
+            });
+
+            ChatLog.Clear();
+            foreach (var log in searchResult)
+            {
+                ChatLog.Add(log);
+            }
+        }
+
         private void ReadFile(string path)
         {
             try
             {
                 ChatLog.Clear();
+                _fullLog.Clear();
 
                 if (File.Exists(path))
                 {
@@ -60,6 +98,7 @@ namespace ChatViewer.ViewModel
                             if (log.IsValid)
                             {
                                 ChatLog.Add(log);
+                                _fullLog.Add(log);
                                 Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
                             }
                         }
