@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using ChatViewer.Model;
 
 namespace ChatViewer.ViewModel
 {
@@ -12,11 +13,15 @@ namespace ChatViewer.ViewModel
         [ObservableProperty]
         public string _fileName;
 
+        [ObservableProperty]
+        public List<ChatLog> _chatLog;
+
         [RelayCommand]
         public void FileOpen()
         {
             ExecuteFileOpen();
         }
+
 
         public MainViewModel()
         {
@@ -37,6 +42,7 @@ namespace ChatViewer.ViewModel
 
         private void ReadFile(string path)
         {
+            ChatLog = new List<ChatLog>();
             if (File.Exists(path))
             {
                 using (var reader = new StreamReader(path, Encoding.UTF8))
@@ -44,7 +50,13 @@ namespace ChatViewer.ViewModel
                     while (!reader.EndOfStream)
                     {
                         var line = reader.ReadLine();
-                        Debug.WriteLine(line);
+
+                        ChatLog log = new ChatLog(line);
+
+                        if (log.IsValid)
+                        {
+                            ChatLog.Add(log);
+                        }
                     }
                 }
             }
