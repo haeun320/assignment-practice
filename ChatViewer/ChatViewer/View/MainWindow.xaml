@@ -7,7 +7,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBlock Text="{Binding Title}"/>
-        <Button Command="{Binding ButtonCommand}" Width="200" Height="100">test</Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.Row="0" VerticalAlignment="Center">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding FileOpenCommand}"/>
+            </MenuItem>
+        </Menu>
+        
+        <TextBlock Grid.Row="1" Text="{Binding FileName}"/>
     </Grid>
 </Window>
