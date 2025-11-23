@@ -41,7 +41,7 @@ namespace ChatViewer.Model
 
             DateTime dateTime;
 
-            if (words.Length < 2)
+            if (words.Length < 3) // ["", "날짜", "발신자,메시지"]
             {
                 return false;
             }
@@ -56,7 +56,7 @@ namespace ChatViewer.Model
             // 발신자, 메시지 내용 파싱
             words = words[2].Split(':', 2);
 
-            if (words.Length < 2)
+            if (words.Length < 2) // ["발신자", "메시지"]
             {
                 return false;
             }
