@@ -62,23 +62,21 @@ namespace ChatViewer.ViewModel
             }
 
             string param = SearchParam.Trim();
+            var snapshot = _fullLog.ToList();
 
             var searchResult = await Task.Run(() =>
             {
-                var logQuery = from log in _fullLog
+                var logQuery = from log in snapshot
                                where log.Sender.Contains(param) || log.Message.Contains(param)
                                select log;
                 return logQuery.ToList();
             });
 
-            Application.Current.Dispatcher.Invoke(() =>
+            ChatLog.Clear();
+            foreach (var log in searchResult)
             {
-                ChatLog.Clear();
-                foreach (var log in searchResult)
-                {
-                    ChatLog.Add(log);
-                }
-            });
+                ChatLog.Add(log);
+            }
         }
 
         private void ReadFile(string path)
