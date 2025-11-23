@@ -1,20 +1,21 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ChatViewer.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
-using ChatViewer.Model;
 
 namespace ChatViewer.ViewModel
 {
     public partial class MainViewModel : ObservableObject 
     {
         [ObservableProperty]
-        public string _fileName;
+        private string _fileName;
 
         [ObservableProperty]
-        public List<ChatLog> _chatLog;
+        private ObservableCollection<ChatLog> _chatLog;
 
         [RelayCommand]
         public void FileOpen()
@@ -42,7 +43,7 @@ namespace ChatViewer.ViewModel
 
         private void ReadFile(string path)
         {
-            ChatLog = new List<ChatLog>();
+            ChatLog = new ObservableCollection<ChatLog>();
             if (File.Exists(path))
             {
                 using (var reader = new StreamReader(path, Encoding.UTF8))
