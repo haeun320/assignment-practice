@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using System.IO;
+using System.Text;
+using System.Diagnostics;
 
 namespace ChatViewer.ViewModel
 {
@@ -12,18 +15,39 @@ namespace ChatViewer.ViewModel
         [RelayCommand]
         public void FileOpen()
         {
+            ExecuteFileOpen();
+        }
+
+        public MainViewModel()
+        {
+            
+        }
+
+        private void ExecuteFileOpen()
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
 
             if (openFileDialog.ShowDialog() == true)
             {
                 FileName = openFileDialog.FileName;
+                ReadFile(FileName);
             }
         }
 
-        public MainViewModel()
+        private void ReadFile(string path)
         {
-
+            if (File.Exists(path))
+            {
+                using (var reader = new StreamReader(path, Encoding.UTF8))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        Debug.WriteLine(line);
+                    }
+                }
+            }
         }
     }
 }

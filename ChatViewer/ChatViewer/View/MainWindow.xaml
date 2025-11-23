@@ -9,6 +9,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
@@ -17,7 +18,10 @@
                 <MenuItem Header="_Open" Command="{Binding FileOpenCommand}"/>
             </MenuItem>
         </Menu>
-        
-        <TextBlock Grid.Row="1" Text="{Binding FileName}"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+            <TextBlock Text="FilePath: "/>
+            <TextBlock Grid.Row="1" Text="{Binding FileName}"/>
+        </StackPanel>
     </Grid>
 </Window>
