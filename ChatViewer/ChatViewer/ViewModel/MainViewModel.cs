@@ -56,6 +56,11 @@ namespace ChatViewer.ViewModel
 
         private async Task ExecuteSearch()
         {
+            if (string.IsNullOrEmpty(SearchParam))
+            {
+                SearchParam = "";
+            }
+
             string param = SearchParam.Trim();
 
             var searchResult = await Task.Run(() =>
