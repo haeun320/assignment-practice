@@ -18,16 +18,28 @@ namespace ChatViewer.ViewModel
         [ObservableProperty]
         private ObservableCollection<ChatLog> _chatLog;
 
+        private List<ChatLog> _fullLog;
+
+        [ObservableProperty]
+        private string _searchParam;
+
         [RelayCommand]
         public void FileOpen()
         {
             ExecuteFileOpen();
         }
 
+        [RelayCommand]
+        public void Search()
+        {
+            ExecuteSearch();
+        }
+
 
         public MainViewModel()
         {
             ChatLog = new ObservableCollection<ChatLog>();
+            _fullLog = new List<ChatLog>();
         }
 
         private void ExecuteFileOpen()
@@ -42,11 +54,27 @@ namespace ChatViewer.ViewModel
             }
         }
 
+        private void ExecuteSearch()
+        {
+            string param = SearchParam.Trim();
+
+            var logQuery = from log in _fullLog
+                           where log.Sender.Contains(param) || log.Message.Contains(param)
+                           select log;
+
+            ChatLog.Clear();
+            foreach (var log in logQuery)
+            {
+                ChatLog.Add(log);
+            }
+        }
+
         private void ReadFile(string path)
         {
             try
             {
                 ChatLog.Clear();
+                _fullLog.Clear();
 
                 if (File.Exists(path))
                 {
@@ -60,6 +88,7 @@ namespace ChatViewer.ViewModel
                             if (log.IsValid)
                             {
                                 ChatLog.Add(log);
+                                _fullLog.Add(log);
                                 Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
                             }
                         }
