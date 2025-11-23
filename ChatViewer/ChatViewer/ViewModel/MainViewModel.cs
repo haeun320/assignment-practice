@@ -30,9 +30,9 @@ namespace ChatViewer.ViewModel
         }
 
         [RelayCommand]
-        public void Search()
+        public async Task Search()
         {
-            ExecuteSearch();
+            await ExecuteSearch();
         }
 
 
@@ -54,19 +54,26 @@ namespace ChatViewer.ViewModel
             }
         }
 
-        private void ExecuteSearch()
+        private async Task ExecuteSearch()
         {
             string param = SearchParam.Trim();
 
-            var logQuery = from log in _fullLog
-                           where log.Sender.Contains(param) || log.Message.Contains(param)
-                           select log;
-
-            ChatLog.Clear();
-            foreach (var log in logQuery)
+            var searchResult = await Task.Run(() =>
             {
-                ChatLog.Add(log);
-            }
+                var logQuery = from log in _fullLog
+                               where log.Sender.Contains(param) || log.Message.Contains(param)
+                               select log;
+                return logQuery.ToList();
+            });
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ChatLog.Clear();
+                foreach (var log in searchResult)
+                {
+                    ChatLog.Add(log);
+                }
+            });
         }
 
         private void ReadFile(string path)
