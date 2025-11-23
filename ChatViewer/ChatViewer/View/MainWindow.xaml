@@ -7,7 +7,31 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBlock Text="{Binding Title}"/>
-        <Button Command="{Binding ButtonCommand}" Width="200" Height="100">test</Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.Row="0" VerticalAlignment="Center">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding FileOpenCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+            <TextBlock Text="FilePath: "/>
+            <TextBlock Grid.Row="1" Text="{Binding FileName}"/>
+        </StackPanel>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding ChatLog}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="Sender" DisplayMemberBinding="{Binding Sender}"/>
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

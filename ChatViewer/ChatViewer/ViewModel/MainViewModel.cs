@@ -1,24 +1,75 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ChatViewer.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
+using Microsoft.Win32;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Windows;
 
 namespace ChatViewer.ViewModel
 {
     public partial class MainViewModel : ObservableObject 
     {
         [ObservableProperty]
-        private string _title = "Test";
+        private string _fileName;
 
-        private ICommand _buttonCommand;
-        public ICommand ButtonCommand => _buttonCommand ??= new RelayCommand(ExecuteButtonCommand);
-        public MainViewModel()
+        [ObservableProperty]
+        private ObservableCollection<ChatLog> _chatLog;
+
+        [RelayCommand]
+        public void FileOpen()
         {
-
+            ExecuteFileOpen();
         }
 
-        private void ExecuteButtonCommand()
+
+        public MainViewModel()
         {
-            Title = "Button Clicked!";
+            ChatLog = new ObservableCollection<ChatLog>();
+        }
+
+        private void ExecuteFileOpen()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                FileName = openFileDialog.FileName;
+                ReadFile(FileName);
+            }
+        }
+
+        private void ReadFile(string path)
+        {
+            try
+            {
+                ChatLog.Clear();
+
+                if (File.Exists(path))
+                {
+                    using (var reader = new StreamReader(path, Encoding.UTF8))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var line = reader.ReadLine();
+                            ChatLog log = new ChatLog(line);
+
+                            if (log.IsValid)
+                            {
+                                ChatLog.Add(log);
+                                Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
