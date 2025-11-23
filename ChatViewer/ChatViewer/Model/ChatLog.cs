@@ -41,6 +41,11 @@ namespace ChatViewer.Model
 
             DateTime dateTime;
 
+            if (words.Length < 2)
+            {
+                return false;
+            }
+
             if (!DateTime.TryParse(words[1], out dateTime))
             {
                 return false;

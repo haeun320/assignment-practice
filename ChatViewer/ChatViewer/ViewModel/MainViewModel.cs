@@ -56,6 +56,7 @@ namespace ChatViewer.ViewModel
                         if (log.IsValid)
                         {
                             ChatLog.Add(log);
+                            Debug.WriteLine($"{log.Time}, {log.Sender}, {log.Message}");
                         }
                     }
                 }
