@@ -9,10 +9,10 @@ namespace ChatViewer.Model
 {
     public class ChatLog
     {
-        public bool IsValid { get; set; }
-        public DateTime Time { get; set; }
-        public string Sender { get; set; }
-        public string Message { get; set; }
+        public bool IsValid { get; private set; }
+        public DateTime Time { get; private set; }
+        public string Sender { get; private set; }
+        public string Message { get; private set; }
 
         /// <summary>
         /// ChatLine을 받아 파싱 및 유효성 점검 후 저장
