@@ -10,6 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="25"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
@@ -23,5 +24,15 @@
             <TextBlock Text="FilePath: "/>
             <TextBlock Grid.Row="1" Text="{Binding FileName}"/>
         </StackPanel>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding ChatLog}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="Sender" DisplayMemberBinding="{Binding Sender}"/>
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
